@@ -1,0 +1,27 @@
+.vs/
+# Visual Studio Code workspace (optional)
+.vscode/
+
+# Build output
+bin/
+obj/
+x64/Debug/
+Debug/
+Release/
+
+# Visual C++/MSVC artifacts
+*.suo
+*.user
+*.userosscache
+*.vcxproj.user
+*.ilk
+*.pdb
+*.idb
+*.log
+*.tlog
+*.lastbuildstate
+
+# Generated executables and recipes
+*.exe
+*.exe.recipe
+*.dll
