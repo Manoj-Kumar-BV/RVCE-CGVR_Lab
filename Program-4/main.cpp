@@ -2,7 +2,6 @@
 
 void draw_pixel(GLint cx, GLint cy)
 {
-	glColor3f(1.0, 0.0, 0.0);
 	glBegin(GL_POINTS);
 	glVertex2i(cx, cy);
 	glEnd();
@@ -20,7 +19,7 @@ void plotpixels(GLint h, GLint k, GLint x, GLint y)
 	draw_pixel(-y + h, -x + k);
 }
 
-void Circle_draw(GLint h, GLint k, GLint r)  // Midpoint Circle Drawing Algorithm
+void Circle_draw(GLint h, GLint k, GLint r)
 {
 	GLint d = 1 - r, x = 0, y = r;
 	while (y > x)
@@ -37,16 +36,22 @@ void Circle_draw(GLint h, GLint k, GLint r)  // Midpoint Circle Drawing Algorith
 	}
 	plotpixels(h, k, x, y);
 }
-void Cylinder_draw()
+
+// Draw cylinder by extruding circle
+void displayCylinder()
 {
-	GLint xc = 100, yc = 100, r = 50, i, n = 50;
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3f(1.0, 0.0, 0.0);
+
+	GLint xc = 200, yc = 150, r = 80, i, n = 100;
 	for (i = 0; i < n; i += 3)
 		Circle_draw(xc, yc + i, r);
+
+	glFlush();
 }
 
 void parallelepiped(int x1, int x2, int y1, int y2)
 {
-	glColor3f(0.0, 0.0, 1.0);
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(x1, y1);
 	glVertex2i(x2, y1);
@@ -55,36 +60,46 @@ void parallelepiped(int x1, int x2, int y1, int y2)
 	glEnd();
 }
 
-void parallelepiped_draw()
-{
-	int x1 = 200, x2 = 300, y1 = 100, y2 = 175, i, n = 40;
-	for (i = 0; i < n; i += 2)
-		parallelepiped(x1 + i, x2 + i, y1 + i, y2 + i);
-}
-
-void init(void)
-{
-	glClearColor(1.0, 1.0, 1.0, 0.0);
-	glMatrixMode(GL_PROJECTION);
-	gluOrtho2D(0.0, 400.0, 0.0, 300.0);
-}
-
-void display(void)
+// Draw parallelepiped by extruding quadrilateral
+void displayParallelepiped()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glColor3f(1.0, 0.0, 0.0);
-	Cylinder_draw();
-	parallelepiped_draw();
+	glColor3f(0.0, 0.0, 1.0);
+
+	int x1 = 150, x2 = 300, y1 = 150, y2 = 250, i, n = 50;
+	for (i = 0; i < n; i += 2)
+		parallelepiped(x1 + i, x2 + i, y1 + i, y2 + i);
+
 	glFlush();
 }
 
-void main(int argc, char** argv)
+void init()
+{
+	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0.0, 500.0, 0.0, 500.0);
+}
+
+int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-	glutInitWindowSize(500, 500);
-	glutCreateWindow("Cylinder,parallelePiped Disp by Extruding Circle &Quadrilaterl ");
+
+	// Create first window for Cylinder
+	glutInitWindowSize(400, 400);
+	glutInitWindowPosition(100, 100);
+	int window1 = glutCreateWindow("Cylinder - Extruded Circle");
 	init();
-	glutDisplayFunc(display);
+	glutDisplayFunc(displayCylinder);
+
+	// Create second window for Parallelepiped
+	glutInitWindowSize(400, 400);
+	glutInitWindowPosition(550, 100);
+	int window2 = glutCreateWindow("Parallelepiped - Extruded Quadrilateral");
+	init();
+	glutDisplayFunc(displayParallelepiped);
+
 	glutMainLoop();
+	return 0;
 }
